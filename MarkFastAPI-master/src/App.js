@@ -1,97 +1,59 @@
-import axios from 'axios';
+import logo from './logo.svg';
+import './App.css';
+import React from 'react'
+import { useEffect, useState } from "react"
+import Axios from 'axios'
 
-import React,{Component} from 'react';
+<title>ID PASSPORT CLASSIFIER</title>
 
-class App extends Component {
+function App ( ) {
 
-	state = {
+  const [data, setData] = useState(null)
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isFilePicked, setIsFilePicked] = useState(false);
 
-	// Initially, no file is selected
-	selectedFile: null
-	};
-	
-	// On file select (from the pop up)
-	onFileChange = event => {
-	
-	// Update the state
-	this.setState({ selectedFile: event.target.files[0] });
-	
-	};
-	
-	// On file upload (click the upload button)
-	onFileUpload = () => {
-	
-	// Create an object of formData
-	const formData = new FormData();
-	
-	// Update the formData object
-	formData.append(
-		"myFile",
-		this.state.selectedFile,
-		this.state.selectedFile.name
-	);
-	
-	// Details of the uploaded file
-	console.log(this.state.selectedFile);
-	
-	// Request made to the backend api
-	// Send formData object
-	axios.post("api/uploadfile", formData);
-	};
-	
-	// File content to be displayed after
-	// file upload is complete
-	fileData = () => {
-	
-	if (this.state.selectedFile) {
-		
-		return (
-		<div>
-			<h2>File Details:</h2>
-			
-<p>File Name: {this.state.selectedFile.name}</p>
-
-			
-<p>File Type: {this.state.selectedFile.type}</p>
-
-			
-<p>
-			Last Modified:{" "}
-			{this.state.selectedFile.lastModifiedDate.toDateString()}
-			</p>
-
-		</div>
-		);
-	} else {
-		return (
-		<div>
-			<br />
-			<h4>Choose before Pressing the Upload button</h4>
-		</div>
-		);
-	}
-	};
-	
-	render() {
-	
-	return (
-		<div>
-			<h1>
-			GeeksforGeeks
-			</h1>
-			<h3>
-			File Upload using React!
-			</h3>
-			<div>
-				<input type="file" onChange={this.onFileChange} />
-				<button onClick={this.onFileUpload}>
-				Upload!
-				</button>
-			</div>
-		{this.fileData()}
-		</div>
-	);
-	}
+  const changeHandler = (event) => {
+      setSelectedFile(event.target.files[0]);
+      setIsFilePicked(true);
+  };
+  
+  const handleSubmit = event => {
+    event.preventDefault();
+    const formData2 = new FormData();
+    formData2.append(
+      "file",
+      selectedFile,
+      selectedFile.name
+    );
+    const requestOptions = {
+      method: 'POST',
+      //headers: { 'Content-Type': 'multipart/form-data' }, // DO NOT INCLUDE HEADERS
+      body: formData2
+  };
+    fetch('http://127.0.0.1:8000/predict', requestOptions)
+      .then(response => response.json())
+      .then(function (response) {
+        console.log('response')
+        setData(response)
+          });		  
 }
 
-export default App;
+ //useEffect(() => { fetch('http://127.0.0.1:8000') .then(res => { return res.json(); }) .then(data => { setData(data); }) }, [])
+
+  return (  <div style={{ justifyContent:'center', alignItems:'center', height: '100vh'}}>
+	  <h1>ID PASSPORT CLASSIFIER</h1>
+      <form onSubmit={handleSubmit}>
+        <fieldset>
+            <input name="image" type="file" onChange={changeHandler} accept=".jpeg, .png, .jpg"/>
+        </fieldset>
+        <button type="submit">Save</button>
+      </form>
+	  <div>
+	  <p> {JSON.stringify(data)} </p>
+	  </div>
+  </div>
+);
+}
+
+
+export default App

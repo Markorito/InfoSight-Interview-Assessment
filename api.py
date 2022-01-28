@@ -1,10 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 import uvicorn
 import tensorflow as tf
 from pydantic import BaseModel
 import cv2
 import numpy as np
 from fastapi.middleware.cors import CORSMiddleware
+from PIL import Image, ImageEnhance
 
 
 
@@ -35,9 +36,9 @@ class request_body(BaseModel):
 # Creating an Endpoint to receive the data
 # to make prediction on.
 @app.post('/predict')
-def predict(data : request_body):
+async def predict(file: UploadFile):
 	# Making the data in a form suitable for prediction
-	test_data = data.image
+	test_data = Image.open(file.file)
 	test_data = np.array(test_data, dtype='uint8')	
 	image = cv2.resize(test_data,(225, 225))
 	image = np.array(image) /255
@@ -46,8 +47,9 @@ def predict(data : request_body):
 	# Predicting the Class
 	prediction = model.predict(image)
 	classes = np.argmax(prediction,axis=1)
+               
 	
 	# Return the Result
-	#return { 'class' : prediction.tolist()}
-	return { 'class' : classes.tolist()}
+	return { 'class' : classes.tolist()[0]}
+
 
