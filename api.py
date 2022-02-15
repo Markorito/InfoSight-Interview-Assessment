@@ -5,7 +5,7 @@ from pydantic import BaseModel
 import cv2
 import numpy as np
 from fastapi.middleware.cors import CORSMiddleware
-from PIL import Image, ImageEnhance
+from PIL import Image
 
 
 
@@ -29,8 +29,7 @@ model = tf.keras.models.load_model('id passport classifier')
 
 # Creating class to define the request body
 # and the type hints of each attribute
-class request_body(BaseModel):
-        image: list
+
 
 
 # Creating an Endpoint to receive the data

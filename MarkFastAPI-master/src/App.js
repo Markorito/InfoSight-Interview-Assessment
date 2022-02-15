@@ -2,9 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react'
 import { useEffect, useState } from "react"
-import Axios from 'axios'
 
-<title>ID PASSPORT CLASSIFIER</title>
 
 function App ( ) {
 
@@ -38,7 +36,6 @@ function App ( ) {
           });		  
 }
 
- //useEffect(() => { fetch('http://127.0.0.1:8000') .then(res => { return res.json(); }) .then(data => { setData(data); }) }, [])
 
   return (  <div style={{ justifyContent:'center', alignItems:'center', height: '100vh'}}>
 	  <h1>ID PASSPORT CLASSIFIER</h1>
